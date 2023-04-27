@@ -1,13 +1,4 @@
-import numpy as np
-import pandas as pd
-
-import matplotlib.pyplot as plt
-plt.style.use('fivethirtyeight')
-import seaborn as sns
-sns.set(context='notebook', style='ticks', font_scale=1.5)
-
 from sklearn.metrics import classification_report
-import scipy.optimize as opt
 
 from functions import *
 
@@ -105,12 +96,12 @@ print(classification_report(y, predictions))  # 打印分类模型的性能报�
 x1 = np.arange(130, step=0.1)
 x2 = -final_theta[0] / final_theta[2] - final_theta[1] / final_theta[2] * x1
 
-# 创建一个带有线性回归线的散点图
+# 创建一个带有决策边界的散点图
 # 横轴的变量名 纵轴的变量名 颜色变量 数据集 图形的高度 图片的宽高比 是否绘制线性回归线 散点的属性
 sns.lmplot(x='exam1', y='exam2', hue='admitted', data=data, 
            height=6, aspect=1.5, fit_reg=False, scatter_kws={'s': 25})
 
-plt.plot(x1, x2, 'grey')  # 绘制灰色的决策边界
+plt.plot(x1, x2, 'grey')  # 绘制灰色的线性决策边界
 plt.xlim(0, 130)  # 设置x轴的范围
 plt.ylim(0, 130)  # 设置y轴的范围
 plt.title('Decision Boundary')  # 设置图表的标题
