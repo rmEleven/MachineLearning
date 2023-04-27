@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
+
 import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 import seaborn as sns
 sns.set(context='notebook', style='ticks', font_scale=1.5)
+
 from sklearn.metrics import classification_report
 import scipy.optimize as opt
+
 from functions import *
 
 
@@ -38,7 +41,7 @@ negative = data[data['admitted'].isin([0])]  # 负向类
 # plt.show()
 
 
-'''训练过程'''
+'''拟合参数'''
 X = get_X(data)
 y = get_y(data)
 theta = np.zeros(3)
@@ -51,7 +54,7 @@ res = opt.minimize(fun=cost, x0=theta, args=(X, y), method='Newton-CG', jac=grad
 final_theta = res.x
 
 
-'''验证过程'''
+'''模型验证'''
 predictions = predict(final_theta, X)
 correct = [1 if(a == b) else 0 for (a, b) in zip(predictions, y)]
 accuracy = (sum(map(int, correct))) % len(correct)
