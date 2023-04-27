@@ -20,8 +20,8 @@ from functions import *
 # 为读取的 DataFrame 指定列名
 data = pd.read_csv('data1.txt', header=None, names=['exam1', 'exam2', 'admitted'])
 
-# print(data.head())      # 显示前5条数据
-# print(data.describe())  # 显示统计信息
+print(data.head())      # 显示前5条数据
+print(data.describe())  # 显示统计信息
 
 
 '''数据可视化'''
@@ -40,7 +40,7 @@ ax.scatter(negative['exam1'], negative['exam2'], s=50, c='r', marker='x', label=
 ax.legend()  # 添加图例
 ax.set_xlabel('Exam1 Score')  # 设置x轴标签为Exam1 Score
 ax.set_ylabel('Exam2 Score')  # 设置y轴标签为Exam2 Score
-ax.set_title('Data Visualization')
+ax.set_title('Data Visualization')  # 设置图形标题为Data Visualization
 plt.show()  # 显示图形
 
 
@@ -56,6 +56,7 @@ plt.show()  # 显示图形
 
 
 '''拟合参数'''
+
 X = get_X(data)
 y = get_y(data)
 theta = np.zeros(3)
@@ -82,14 +83,24 @@ final_theta = res.x
 
 
 '''模型验证'''
+
 predictions = predict(final_theta, X)  # 预测结果的向量
 correct = [1 if(a == b) else 0 for (a, b) in zip(predictions, y)]  # 模型的预测是否正确
 accuracy = (sum(map(int, correct))) % len(correct)  # 将正确率转换为百分比格式
-# print('accuracy = {0}%'.format(accuracy))
-# print(classification_report(y, predictions))
+print('accuracy = {0}%'.format(accuracy))  # 打印正确率
+
+# precision：精确度，指分类器预测为正类的样本中实际为正类的比例。
+# recall：召回率，指实际为正类的样本中被分类器正确预测为正类的比例。
+# f1-score：F1分数是精度和召回率的加权平均值，用于综合评估分类器的性能。
+# support：支持度，指在测试集中属于这个类别的样本数量。
+print(classification_report(y, predictions))  # 打印分类模型的性能报告
+# accuracy：准确度，指分类器正确分类的样本数与总样本数之比。
+# macro avg：宏平均值，将指标在所有类别上取平均值，不考虑类别不平衡问题。
+# weighted avg：加权平均值，将指标在所有类别上取加权平均值，考虑类别不平衡问题。
 
 
 '''寻找决策边界'''
+
 # theta0 + theta1 * x1 + theta2 * x2 = 0
 x1 = np.arange(130, step=0.1)
 x2 = -final_theta[0] / final_theta[2] - final_theta[1] / final_theta[2] * x1
