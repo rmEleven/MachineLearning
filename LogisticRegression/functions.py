@@ -25,3 +25,34 @@ def gradient(theta, X, y):
 def predict(theta, X):
     probability = sigmoid(X @ theta)
     return  [1 if x >= 0.5 else 0 for x in probability]
+
+def feature_mapping(x, y, power, as_ndarray=False):
+    '''
+    将二维特征x和y进行多项式映射
+    power用于指定多项式特征的最高次数
+    
+    例如：
+    input:  x = 2, y = 3, power = 2
+    return: 1 2 3 4 6 9
+    '''
+    data = {"f{}{}".format(i - p, p): np.power(x, i - p) * np.power(y, p)
+                for i in np.arange(power + 1)
+                for p in np.arange(i + 1)
+            }
+
+    if as_ndarray:
+        return pd.DataFrame(data).values
+    else:
+        return pd.DataFrame(data)
+    
+def regularized_cost(theta, X, y, lr=1):
+    theta_1_to_n = theta[1:]
+    regularized_term = (lr / (2 * len(X))) * np.power(theta_1_to_n, 2).sum()
+    return cost(theta, X, y) + regularized_term
+
+def regularized_gradient(theta, X, y, lr=1):
+    theta_1_to_n = theta[1:]
+    regularized_theta = (lr / len(X)) * theta_1_to_n
+    regularized_term = np.concatenate([np.array([0]), regularized_theta])
+    return gradient(theta, X, y) + regularized_term
+
