@@ -7,7 +7,7 @@ def load_data(path, transpose=True):
     '''
     加载数据的函数
     '''
-    data = sio.loadmat(path)  # 读取MATLAB格式的数据文件
+    data = sio.loadmat(path)   # 读取MATLAB格式的数据文件
 
     X = data.get('X')          # 从加载的数据中获取X变量，它是一个形状为(5000, 400)的二维numpy数组。
     y = data.get('y')          # 从加载的数据中获取y变量，它是一个形状为(5000, 1)的二维numpy数组。
