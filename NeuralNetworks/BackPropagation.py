@@ -44,6 +44,22 @@ def plot_100_image(X):
             plt.xticks(np.array([]))
             plt.yticks(np.array([]))
 
+def plot_hidden_layer(theta):
+    """
+    theta: (10285, )
+    """
+    final_theta1, _ = deserialize(theta)
+    hidden_layer = final_theta1[:, 1:]  # ger rid of bias term theta
+
+    fig, ax_array = plt.subplots(nrows=5, ncols=5, sharey=True, sharex=True, figsize=(5, 5))
+
+    for r in range(5):
+        for c in range(5):
+            ax_array[r, c].matshow(hidden_layer[5 * r + c].reshape((20, 20)),
+                                   cmap=matplotlib.cm.binary)
+            plt.xticks(np.array([]))
+            plt.yticks(np.array([]))
+
 def expand_y(y):
     """
     expand 5000*1 into 5000*10
@@ -262,6 +278,13 @@ res = nn_training(X, y)  # 运行耗时，耐心等待
 
 
 '''显示准确率'''
+
 final_theta = res.x
 _, y_answer = load_data('data2.mat')
 show_accuracy(final_theta, X, y_answer)
+
+
+'''显示隐藏层'''
+
+plot_hidden_layer(final_theta)
+plt.show()
