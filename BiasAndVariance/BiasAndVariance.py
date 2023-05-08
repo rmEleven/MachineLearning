@@ -105,7 +105,7 @@ X, y, Xval, yval, Xtest, ytest = load_data()
 # plt.show()  # 显示绘制的图形
 
 
-'''拟合数据'''
+'''线性模型拟合数据'''
 # 将 X、Xval 和 Xtest 三个一维数组转换为二维数组，并在其最左侧插入一列 1，用于计算线性回归模型的偏置。
 X_, Xval_, Xtest_ = X.copy() , Xval.copy() , Xtest.copy()  # 备份一维数组
 X, Xval, Xtest = [np.insert(x.reshape(x.shape[0], 1), 0, np.ones(x.shape[0]), axis=1) for x in (X, Xval, Xtest)]
@@ -119,13 +119,11 @@ k = final_theta[1] # slope
 # plt.legend(loc=2)  # 添加图例
 # plt.show()         # 显示绘制的图形
 
-
-'''绘制学习曲线'''
-plot_learning_curve(X, y, Xval, yval, l=0, re_cost=True)
-plt.show()  # 欠拟合
+# plot_learning_curve(X, y, Xval, yval, l=0, re_cost=True)  # 绘制学习曲线
+# plt.show()  # 欠拟合
 
 
-'''多项式回归数据'''
+'''多项式模型拟合数据'''
 X_poly, Xval_poly, Xtest_poly = prepare_poly_data(X_, Xval_, Xtest_, power=8)
 
 # plot_learning_curve(X_poly, y, Xval_poly, yval, l=0)
@@ -136,3 +134,34 @@ X_poly, Xval_poly, Xtest_poly = prepare_poly_data(X_, Xval_, Xtest_, power=8)
 # plt.show()  # 欠拟合
 
 
+'''寻找找最佳的lambda'''
+l_candidate = [0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10]  # lambda候选值
+training_cost, cv_cost = [], []  # 初始化训练集和交叉验证集的代价
+
+for l in l_candidate:  # 遍历候选lambda
+    res = linear_regression_np(X_poly, y, l)  # 使用线性回归求解参数，并进行正则化
+    tc = cost(res.x, X_poly, y)        # 计算训练集代价
+    cv = cost(res.x, Xval_poly, yval)  # 计算交叉验证集代价
+    training_cost.append(tc)  # 将训练集代价加入数组
+    cv_cost.append(cv)        # 将交叉验证集代价加入数组
+
+plt.plot(l_candidate, training_cost, label='training')    # 训练集代价
+plt.plot(l_candidate, cv_cost, label='cross validation')  # 交叉验证集代价
+plt.legend(loc=2)     # 添加图例
+plt.xlabel('lambda')  # 添加x轴名称
+plt.ylabel('cost')    # 添加y轴名称
+plt.show()            # 绘制图形
+
+# 使用测试数据来计算 cost
+test_cost = []
+for l in l_candidate:  # 遍历候选lambda
+    theta = linear_regression_np(X_poly, y, l).x  # 使用线性回归求解参数，并进行正则化
+    tc = cost(theta, Xtest_poly, ytest)           # 计算测试集代价
+    test_cost.append(tc)                          # 将测试集代价加入数组
+    print('test cost(l={}) = {}'.format(l, tc))   # 输出测试集代价
+
+plt.semilogx(l_candidate, test_cost, label='test')  # 绘制一个以对数刻度为x轴的线图
+plt.legend(loc=2)     # 添加图例
+plt.xlabel('lambda')  # 添加x轴名称
+plt.ylabel('cost')    # 添加y轴名称
+plt.show()            # 绘制图形
